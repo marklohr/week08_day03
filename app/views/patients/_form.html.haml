@@ -1,0 +1,51 @@
+- if @patient.errors.any?
+  %p#notice= notice
+  - @patient.errors.full_messages.each do |message|
+    = message
+    %br
+%br
+  = form_for [@doctor, @patient] do |f|
+    %strong= f.label :first_name
+    %br
+    = f.text_field :first_name
+    %br
+    %strong= f.label :last_name
+    %br
+    = f.text_field :last_name
+    %br
+    %strong= f.label :date_of_birth
+    %br
+    = f.date_field :date_of_birth
+    %br
+    %strong= f.label :description
+    %br
+    = f.text_area :description, size: "30x4"
+    %br
+    %strong= f.label :gender
+    %br
+    = f.radio_button(:gender, "male")
+    = f.label(:gender, "male")
+    = f.radio_button(:gender, "female")
+    = f.label(:gender, "female")
+    %br
+    %br
+    %strong= f.label :blood_type
+    %br
+    = f.select :blood_type, options_for_select(Patient::BLOOD_TYPE_OPTIONS, f.object.blood_type), include_blank: "---Select---"
+    %br
+    %h3 Prescribed Medications:
+    - @medications.each do |medication|
+      = check_box_tag 'patient[medication_ids][]', medication.id, @patient.medications.include?(medication)
+      = medication.name
+      %br
+    %br
+      / = link_to "Or create a new medication", new_medication_path
+      %a.btn.btn-sm.btn-success{:href => new_medication_path, :role => "button"} Or create a new medication
+      %br
+      %br
+        = f.submit
+  %a.btn.btn-sm.btn-primary{:href => doctor_path(@doctor), :role => "button"} Cancel
+  %a.btn.btn-sm.btn-primary{:href => root_path, :role => "button"} Return to Home »
+
+  %br
+  %br
